@@ -5,6 +5,8 @@ class Field:
 
     WIDTH = 7
     HEIGHT = 5
+    WIN_LENGTH = 4
+    
 
     @unique
     class Player(IntEnum):
@@ -14,6 +16,7 @@ class Field:
     def __init__(self):
         self.grid = np.zeros((self.HEIGHT, self.WIDTH), dtype=np.int8)
         self.filllevel = np.zeros(self.WIDTH, dtype=np.int8)
+        self.count_moves = 0
 
     
     def __str__(self):
@@ -44,30 +47,51 @@ class Field:
         # capacity is not yet exceeded
         self.grid[self.filllevel[slot], slot] = player
         self.filllevel[slot] += 1
+        self.count_moves += 1
         return True
 
     def check(self):
-        # TODO: implement
-        return
+        # directions where winning conditions can occur
+        directions = [ 
+            # (direction in grid, x/width-limits, y/height-limits)
+            ((0,1),  (0,self.WIDTH-self.WIN_LENGTH), (0, self.HEIGHT-1)),               # --ros
+            ((1,0),  (0,self.WIDTH-1),               (0, self.HEIGHT-self.WIN_LENGTH)), # |-rows
+            ((1,1),  (0,self.WIDTH-self.WIN_LENGTH), (0, self.HEIGHT-self.WIN_LENGTH)), # /-rows
+            ((-1,1), (0,self.WIDTH-self.WIN_LENGTH), (self.WIN_LENGTH-1,self.HEIGHT-1)) # \-rows
+            ]
 
+        # iterate row-wise over field (better than colwise because rows tend to be filled first)
+        for col in range(0, self.WIDTH):
+            for row in range(0, self.HEIGHT):
+                pos_start = (row, col) # current grid position that acts as start point
+                player = self.grid[pos_start] # player at the current grid position
+                
+                # if this field has no chip, there is nothing to do here
+                if player == 0:
+                    continue
 
-
-# test = Field()
-# print(test.place(1,Field.Player.P1))
-# print(test)
-# print(test.place(1,Field.Player.P2))
-# print(test)
-# print(test.place(2,Field.Player.P1))
-# print(test)
-# print(test.place(1,Field.Player.P1))
-# print(test)
-# print(test.place(1,Field.Player.P2))
-# print(test)
-# print(test.place(1,Field.Player.P1))
-# print(test)
-# print(test.place(1,Field.Player.P2))
-# print(test)
-
-#test.place(-1,Field.Player.P1)
-#test.place(7,Field.Player.P1)
-#test.place(0, 3)
+                # from the grid position check all directions
+                for direction in directions:
+                    # check wether a winning combination fits in
+                    if(col >= direction[1][0] and col <= direction[1][1] and
+                       row >= direction[2][0] and row <= direction[2][1]):
+                        # the direction in where to look for winning combination
+                        increment = direction[0]
+                        pos = pos_start
+                        num_consecutive = 1
+                        # go self.WIN_LENGTH-1 steps in the current direction
+                        for _ in range(0,self.WIN_LENGTH-1): # (WIN_LENGTH-1) iterations
+                            pos = tuple(np.add(pos,increment))
+                            pos_value = self.grid[pos]
+                            if pos_value != player:
+                                # the player changed, so there can't be a winning combination here
+                                break
+                            num_consecutive += 1
+                        if num_consecutive == self.WIN_LENGTH:
+                            return player
+                    else:
+                        # winning combination can't fit in
+                        continue
+        # no player was found
+        return 0
+                
