@@ -8,13 +8,13 @@ player = Field.Player.P1
 game_ended = False
 
 def callbackClick(column_number):
-    global player, game_ended
+    global game_ended
     # check if game has not ended
     if game_ended:
         return
     # only mark player as done if there is no success
     try:
-        if f.place(column_number, player):
+        if f.place(column_number):
             # chip was placed, so update field, evaluate and switch player
             p.drawBoard()
             # evaluate
@@ -28,12 +28,11 @@ def callbackClick(column_number):
                 game_ended = True
                 return
             # switch player
+            player = f.switchPlayer()
             if player == Field.Player.P1:
-                p.showMessage("Player 2 is playing...")
-                player = Field.Player.P2
-            elif player == Field.Player.P2:
                 p.showMessage("Player 1 is playing...")
-                player = Field.Player.P1
+            elif player == Field.Player.P2:
+                p.showMessage("Player 2 is playing...")
         else:
             p.showMessage('Bin is already full. Try again.')
     except:

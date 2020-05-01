@@ -98,6 +98,15 @@ class TestField(unittest.TestCase):
                 #print(self.field)
                 self.assertEqual(self.field.check(),Field.Player.P2)  
 
+    def test_player_switch(self):
+        self.assertEqual(self.field.getPlayer(), Field.Player.P1)
+        # switch 1->2
+        self.assertEqual(self.field.switchPlayer(), Field.Player.P2)
+        self.assertEqual(self.field.getPlayer(), Field.Player.P2)
+        # switch 2->1
+        self.assertEqual(self.field.switchPlayer(), Field.Player.P1)
+        self.assertEqual(self.field.getPlayer(), Field.Player.P1)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -17,6 +17,7 @@ class Field:
         self.grid = np.zeros((self.HEIGHT, self.WIDTH), dtype=np.int8)
         self.filllevel = np.zeros(self.WIDTH, dtype=np.int8)
         self.count_moves = 0
+        self.player = Field.Player.P1
 
     
     def __str__(self):
@@ -32,7 +33,11 @@ class Field:
         string = string.replace("2", "X")
         return string
 
-    def place(self, slot, player):
+    def place(self, slot, player=None):
+        # determine player if not given
+        if player == None:
+            player = self.getPlayer()
+
         if slot < 0 or slot >= Field.WIDTH:
             raise ValueError('Illegal slot number.')
         if player != Field.Player.P1 and player != Field.Player.P2:
@@ -94,5 +99,15 @@ class Field:
                         continue
         # no player was found
         return 0
+
+    def getPlayer(self):
+        return self.player
+
+    def switchPlayer(self):
+        if self.player == Field.Player.P1:
+            self.player = Field.Player.P2
+        elif self.player == Field.Player.P2:
+            self.player = Field.Player.P1
+        return self.player
 
                 
