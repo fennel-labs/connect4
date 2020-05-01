@@ -93,12 +93,13 @@ class Field:
                                 break
                             num_consecutive += 1
                         if num_consecutive == self.WIN_LENGTH:
-                            return player
+                            # first is player, second is start point of winning chips, third is end point of winning chips
+                            return (player, pos_start, pos)
                     else:
                         # winning combination can't fit in
                         continue
         # no player was found
-        return 0
+        return (0, None, None)
 
     def getPlayer(self):
         return self.player

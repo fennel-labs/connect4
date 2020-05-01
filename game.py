@@ -18,14 +18,14 @@ def callbackClick(column_number):
             # chip was placed, so update field, evaluate and switch player
             p.drawBoard()
             # evaluate
-            result = f.check()
+            (result, start, end) = f.check()
             if result == Field.Player.P1:
                 p.showMessage('Player 1 won!')
-                game_ended = True
-                return
             elif result == Field.Player.P2:
                 p.showMessage('Player 2 won!')
+            if result != 0:
                 game_ended = True
+                p.drawWinningCombination(start, end)
                 return
             # switch player
             player = f.switchPlayer()

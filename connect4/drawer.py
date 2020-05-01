@@ -66,3 +66,7 @@ class Drawer:
     def showMessage(self, msg):
         self.ax.set_title(msg)
         self.fig.canvas.draw()
+
+    def drawWinningCombination(self, start, end):
+        plt.plot([start[1], end[1]], [start[0], end[0]], 'k', lineWidth=5)
+        self.fig.canvas.draw()

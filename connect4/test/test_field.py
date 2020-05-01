@@ -50,11 +50,13 @@ class TestField(unittest.TestCase):
                 pos = (row, col)
                 # put 4 chips in a winning condtion into the field
                 for _ in range(0,Field.WIN_LENGTH):
-                    self.assertEqual(self.field.check(),0)
+                    player,_,_ = self.field.check()
+                    self.assertEqual(player,0)
                     self.field.grid[pos] = Field.Player.P1
                     pos = tuple(np.add(pos,increment))
                 #print(self.field)
-                self.assertEqual(self.field.check(),Field.Player.P1)
+                player,_,_ = self.field.check()
+                self.assertEqual(player,Field.Player.P1)
 
         # vertical test
         increment = (1,0)
@@ -64,11 +66,13 @@ class TestField(unittest.TestCase):
                 pos = (row, col)
                 # put 4 chips in a winning condtion into the field
                 for _ in range(0,Field.WIN_LENGTH):
-                    self.assertEqual(self.field.check(),0)
+                    player,_,_ = self.field.check()
+                    self.assertEqual(player,0)
                     self.field.grid[pos] = Field.Player.P2
                     pos = tuple(np.add(pos,increment))
                 #print(self.field)
-                self.assertEqual(self.field.check(),Field.Player.P2)  
+                player,_,_ = self.field.check()
+                self.assertEqual(player,Field.Player.P2)  
 
         # diagnoal 1 test
         increment = (1,1)
@@ -78,11 +82,13 @@ class TestField(unittest.TestCase):
                 pos = (row, col)
                 # put 4 chips in a winning condtion into the field
                 for _ in range(0,Field.WIN_LENGTH):
-                    self.assertEqual(self.field.check(),0)
+                    player,_,_ = self.field.check()
+                    self.assertEqual(player,0)
                     self.field.grid[pos] = Field.Player.P1
                     pos = tuple(np.add(pos,increment))
                 #print(self.field)
-                self.assertEqual(self.field.check(),Field.Player.P1)  
+                player,_,_ = self.field.check()
+                self.assertEqual(player,Field.Player.P1)  
 
         # diagnoal 2 test
         increment = (-1,1)
@@ -92,11 +98,13 @@ class TestField(unittest.TestCase):
                 pos = (row, col)
                 # put 4 chips in a winning condtion into the field
                 for _ in range(0,Field.WIN_LENGTH):
-                    self.assertEqual(self.field.check(),0)
+                    player,_,_ = self.field.check()
+                    self.assertEqual(player,0)
                     self.field.grid[pos] = Field.Player.P2
                     pos = tuple(np.add(pos,increment))
                 #print(self.field)
-                self.assertEqual(self.field.check(),Field.Player.P2)  
+                player,_,_ = self.field.check()
+                self.assertEqual(player,Field.Player.P2)  
 
     def test_player_switch(self):
         self.assertEqual(self.field.getPlayer(), Field.Player.P1)
