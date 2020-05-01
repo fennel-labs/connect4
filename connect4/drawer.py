@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from field import Field
+from connect4.field import Field
 
 class Drawer:
 
@@ -10,18 +10,25 @@ class Drawer:
         self.field = field
 
         # create and adjust axes
-        self.fig, self.ax = plt.subplots()
+        self.fig = plt.figure("Connect4")
+        self.ax = self.fig.add_subplot(1, 1, 1)
         self.ax.tick_params(axis='x', which='both', bottom=False, top=False, labelbottom=False)
         self.ax.tick_params(axis='y', which='both', left=False, right=False, labelleft=False)
         self.ax.set_aspect('equal')
 
-        # register callback to figure
+
+    def setCallback(self, callback):
+        self.callback = callback
+         # register callback to figure
         self.fig.canvas.mpl_connect('button_press_event', self.onclick)
 
     def drawBoard(self):
 
-        # reset axes first
+                
+        # reset axes first (but restore title)
+        title = self.ax.get_title()
         self.ax.clear()
+        self.ax.set_title(title)
         self.ax.set_xlim(-0.5, Field.WIDTH-0.5)
         self.ax.set_ylim(-0.5, Field.HEIGHT-0.5)
 
@@ -40,6 +47,8 @@ class Drawer:
                 circle = plt.Circle((col, row), self.RADIUS, facecolor=color, edgecolor='k')
                 self.ax.add_artist(circle)
 
+        self.fig.canvas.draw()
+
 
     def onclick(self, event):
         column_number = -1
@@ -52,15 +61,8 @@ class Drawer:
                     column_number = int(round(x_coord))
 
         #print("Clicked on {}".format(column_number))
-        return column_number
+        self.callback(column_number)
     
-
-if __name__ == '__main__':
-    f = Field()
-    p = Drawer(f)
-    f.place(0, Field.Player.P1)
-    f.place(1, Field.Player.P2)
-    f.place(1, Field.Player.P1)
-    p.drawBoard()
-    plt.show()
-    
+    def showMessage(self, msg):
+        self.ax.set_title(msg)
+        self.fig.canvas.draw()
